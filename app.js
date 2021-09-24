@@ -8,6 +8,7 @@ const productRouter = require('./routes/productRoutes');
 const customerRouter = require('./routes/customerRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const categoryRouter = require('./routes/categoryRoutes');
+const cartRouter = require('./routes/cartRoutes');
 
 dotenv.config();
 
@@ -35,6 +36,8 @@ app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/customers', customerRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/cart', cartRouter);
+
 // app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {

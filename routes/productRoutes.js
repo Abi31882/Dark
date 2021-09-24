@@ -2,8 +2,11 @@ const express = require('express');
 const productController = require('../controllers/productController');
 const authController = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
+const cartRouter = require('./cartRoutes');
 
 const router = express.Router({ mergeParams: true });
+
+router.use('/:productId/cart', cartRouter);
 
 router.use('/:productId/reviews', reviewRouter);
 
