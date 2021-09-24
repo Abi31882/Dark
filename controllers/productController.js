@@ -1,6 +1,6 @@
 const multer = require('multer');
 const sharp = require('sharp');
-const Customer = require('../models/customerModel');
+const Product = require('../models/productModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
@@ -65,14 +65,20 @@ exports.aliasTopProducts = (req, res, next) => {
   next();
 };
 
-exports.getAllProducts = factory.getAll(Customer);
-exports.getProduct = factory.getOne(Customer, { path: 'reviews' });
-exports.createProduct = factory.createOne(Customer);
-exports.updateProduct = factory.updateOne(Customer);
-exports.deleteProduct = factory.deleteOne(Customer);
+exports.setProductCustomerIds = (req, res, next) => {
+  if (!req.body.category) req.body.category = req.params.categoryId;
+  if (!req.body.customer) req.body.customer = req.customer.id;
+  next();
+};
+
+exports.getAllProducts = factory.getAll(Product);
+exports.getProduct = factory.getOne(Product, { path: 'reviews' });
+exports.createProduct = factory.createOne(Product);
+exports.updateProduct = factory.updateOne(Product);
+exports.deleteProduct = factory.deleteOne(Product);
 
 exports.getProductStats = catchAsync(async (req, res, next) => {
-  const stats = await Customer.aggregate([
+  const stats = await Product.aggregate([
     {
       $match: { ratingsAverage: { $gte: 4.5 } },
     },
@@ -106,7 +112,7 @@ exports.getProductStats = catchAsync(async (req, res, next) => {
 // exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
 //   const year = req.params.year * 1;
 
-//   const plan = await Customer.aggregate([
+//   const plan = await Product.aggregate([
 //     {
 //       $unwind: '$startDates',
 //     },
@@ -164,7 +170,7 @@ exports.getProductStats = catchAsync(async (req, res, next) => {
 //     );
 //   }
 
-//   const products = await Customer.find({
+//   const products = await Product.find({
 //     startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
 //   });
 
@@ -196,7 +202,7 @@ exports.getProductStats = catchAsync(async (req, res, next) => {
 //     );
 //   }
 
-//   const distances = await Customer.aggregate([
+//   const distances = await Product.aggregate([
 //     {
 //       $geoNear: {
 //         near: {

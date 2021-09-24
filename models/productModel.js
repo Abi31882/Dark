@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.ObjectId,
       ref: 'Category',
-      required: [true, 'Aproduct must belong to a category'],
+      required: [true, 'A product must belong to a category'],
     },
     name: {
       type: String,
@@ -17,8 +17,8 @@ const productSchema = new mongoose.Schema(
         "A product's name can have less or equal to 40 characters",
       ],
       minlength: [
-        10,
-        'A product must have greater than or equal to 10 characters',
+        2,
+        'A product must have greater than or equal to 2 characters',
       ],
     },
     slug: String,
@@ -59,7 +59,7 @@ const productSchema = new mongoose.Schema(
     },
     imageCover: {
       type: String,
-      required: [true, 'A product hmust have a cover image'],
+      // required: [true, 'A product hmust have a cover image'],
     },
     images: [String],
     uploadedAt: {

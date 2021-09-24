@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// const Customer = require('./customerModel');
 
 const categorySchema = new mongoose.Schema(
   {
@@ -12,7 +13,10 @@ const categorySchema = new mongoose.Schema(
         40,
         'A category name can have less or equal to 40 characters',
       ],
-      minlength: [2, 'Atour must have greater than or equal to 2 characters'],
+      minlength: [
+        2,
+        'A category must have greater than or equal to 2 characters',
+      ],
       // validate: [validator.isAlpha, 'Category name must only contain characters'],
     },
     slug: String,
@@ -29,8 +33,6 @@ const categorySchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
-
-    maker: { type: mongoose.Schema.ObjectId, ref: 'Customer' },
   },
   {
     toJSON: { virtuals: true },
@@ -60,19 +62,26 @@ categorySchema.pre('save', function (next) {
   next();
 });
 
+// categorySchema.pre('save', async function (req, res, next) {
+//   const customer = await Customer.findById(req.customer.id);
+
+//   this.maker = customer.id;
+//   next();
+// });
+
 // categorySchema.pre('save', async function (next) {
 //   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
 //   this.guides = await Promise.all(guidesPromises);
 //   next();
 // });
 
-categorySchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'maker',
-    select: '-__v -passwordChangedAt',
-  });
-  next();
-});
+// categorySchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'maker',
+//     select: '-__v -passwordChangedAt',
+//   });
+//   next();
+// });
 
 // categorySchema.post('save', function (doc, next) {
 //   console.log(doc);

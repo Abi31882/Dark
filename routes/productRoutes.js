@@ -3,7 +3,7 @@ const productController = require('../controllers/productController');
 const authController = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use('/:productId/reviews', reviewRouter);
 
@@ -17,6 +17,7 @@ router
   .post(
     authController.protect,
     authController.restrictTo('admin', 'retailor'),
+    productController.setProductCustomerIds,
     productController.createProduct
   );
 router
