@@ -6,7 +6,7 @@ const cartRouter = require('./cartRoutes');
 
 const router = express.Router({ mergeParams: true });
 
-router.use('/:productId/cart', cartRouter);
+router.use('/:productId/cart/:cartId', cartRouter);
 
 router.use('/:productId/reviews', reviewRouter);
 

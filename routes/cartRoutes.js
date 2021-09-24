@@ -6,14 +6,16 @@ const router = express.Router({ mergeParams: true });
 
 router.use(authController.protect);
 
+router.route('/').get(cartController.getAllCarts).post(
+  authController.restrictTo('customer'),
+  // cartController.setProductId,
+  cartController.createCart
+);
+
 router
   .route('/')
-  .get(cartController.getAllCarts)
-  .post(
-    authController.restrictTo('customer'),
-    cartController.setProductId,
-    cartController.createCart
-  );
+  .post(cartController.addToCart)
+  .delete(cartController.deleteFromCart);
 
 router
   .route('/:id')

@@ -5,7 +5,7 @@ const cartSchema = new mongoose.Schema(
     product: {
       type: mongoose.Schema.ObjectId,
       ref: 'Product',
-      required: [true, 'Cart must belong to a product'],
+      //   required: [true, 'Cart must belong to a product'],
     },
   },
   {
