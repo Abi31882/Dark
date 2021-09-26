@@ -28,6 +28,11 @@ const customerSchema = new mongoose.Schema({
     enum: ['customer', 'admin', 'retailor'],
     default: 'customer',
   },
+  category: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Category',
+    // required: [true, 'Review must belong to a product'],
+  },
   password: {
     type: String,
     required: [true, 'please provide a password'],

@@ -34,12 +34,14 @@ router.route('/category-stats').get(categoryController.getCategoryStats);
 //   .route('/distances/:latlng/unit/:unit')
 //   .get(categoryController.getDistances);
 
+router.route('/').get(categoryController.getAllCategories);
+
 router
-  .route('/')
-  .get(categoryController.getAllCategories)
+  .route('/retailor/:retailorId')
   .post(
     authController.protect,
     authController.restrictTo('admin', 'retailor'),
+    categoryController.setMakerIds,
     categoryController.createCategory
   );
 router

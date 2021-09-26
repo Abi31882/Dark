@@ -6,16 +6,28 @@ const router = express.Router({ mergeParams: true });
 
 router.use(authController.protect);
 
-router.route('/').get(cartController.getAllCarts).post(
-  authController.restrictTo('customer'),
-  // cartController.setProductId,
-  cartController.createCart
-);
-
 router
   .route('/')
-  .post(cartController.addToCart)
-  .delete(cartController.deleteFromCart);
+  .post(authController.restrictTo('customer'), cartController.addToCart)
+  .delete(authController.restrictTo('customer'), cartController.deleteFromCart);
+
+router
+  .route('/all')
+  .get(authController.restrictTo('admin'), cartController.getAllCarts);
+
+// router.route('/').get(cartController.getAllCarts).post(
+//   authController.restrictTo('customer'),
+//   // cartController.setProductId,
+//   cartController.createCart
+// );
+
+router
+  .route('/customer/:customerId')
+  .post(
+    authController.restrictTo('customer', 'retailor'),
+    cartController.setCustomerId,
+    cartController.createCart
+  );
 
 router
   .route('/:id')

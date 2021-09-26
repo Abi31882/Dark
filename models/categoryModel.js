@@ -19,6 +19,11 @@ const categorySchema = new mongoose.Schema(
       ],
       // validate: [validator.isAlpha, 'Category name must only contain characters'],
     },
+    maker: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Customer',
+      required: [true, 'it is required'],
+    },
     slug: String,
     description: {
       type: String,
@@ -39,6 +44,12 @@ const categorySchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+// categorySchema.virtual('maker', {
+//   ref: 'Customer',
+//   foreignField: 'category',
+//   localField: '_id',
+// });
 
 // categorySchema.index({ price: 1 });
 // categorySchema.index({ price: 1, ratingsAverage: -1 });

@@ -58,6 +58,11 @@ exports.resizeCategoryImages = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.setMakerIds = (req, res, next) => {
+  if (!req.body.maker) req.body.maker = req.params.retailorId;
+  next();
+};
+
 exports.aliasTopCategories = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
@@ -66,7 +71,10 @@ exports.aliasTopCategories = (req, res, next) => {
 };
 
 exports.getAllCategories = factory.getAll(Category);
-exports.getCategory = factory.getOne(Category);
+exports.getCategory = factory.getOne(Category, {
+  path: 'maker',
+  select: 'name role',
+});
 exports.createCategory = factory.createOne(Category);
 exports.updateCategory = factory.updateOne(Category);
 exports.deleteCategory = factory.deleteOne(Category);

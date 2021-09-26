@@ -7,6 +7,11 @@ const cartSchema = new mongoose.Schema(
       ref: 'Product',
       //   required: [true, 'Cart must belong to a product'],
     },
+    customer: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Customer',
+      required: [true, 'cart must belong to a customer'],
+    },
   },
   {
     toJSON: { virtuals: true },
