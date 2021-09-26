@@ -8,7 +8,7 @@ exports.setProductCustomerIds = (req, res, next) => {
   next();
 };
 
-exports.getAllReviews = factory.getAll(Review);
+exports.getAllReviews = factory.getAllForProducts(Review);
 exports.getReview = factory.getOne(Review);
 exports.createReview = factory.createOne(Review);
 exports.updateReview = factory.updateOne(Review);

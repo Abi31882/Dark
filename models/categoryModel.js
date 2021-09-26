@@ -24,6 +24,7 @@ const categorySchema = new mongoose.Schema(
       ref: 'Customer',
       required: [true, 'it is required'],
     },
+
     slug: String,
     description: {
       type: String,
@@ -44,12 +45,6 @@ const categorySchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
-// categorySchema.virtual('maker', {
-//   ref: 'Customer',
-//   foreignField: 'category',
-//   localField: '_id',
-// });
 
 // categorySchema.index({ price: 1 });
 // categorySchema.index({ price: 1, ratingsAverage: -1 });

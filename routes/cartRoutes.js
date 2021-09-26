@@ -21,13 +21,13 @@ router
 //   cartController.createCart
 // );
 
-router
-  .route('/customer/:customerId')
-  .post(
-    authController.restrictTo('customer', 'retailor'),
-    cartController.setCustomerId,
-    cartController.createCart
-  );
+router.use(cartController.setCustomerId);
+
+router.route('/customer/:customerId').post(
+  authController.restrictTo('customer', 'retailor'),
+
+  cartController.createCart
+);
 
 router
   .route('/:id')

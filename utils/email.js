@@ -1,5 +1,5 @@
-// const pug = require('pug');
-// const htmlToText = require('html-to-text');
+const pug = require('pug');
+const htmlToText = require('html-to-text');
 const nodemailer = require('nodemailer');
 
 module.exports = class Email {
@@ -16,7 +16,7 @@ module.exports = class Email {
       return nodemailer.createTransport({
         service: 'SendinBlue',
         auth: {
-          customer: process.env.SENDINBLUE_USERNAME,
+          user: process.env.SENDINBLUE_USERNAME,
           pass: process.env.SENDINBLUE_PASSWORD,
         },
       });
@@ -36,20 +36,20 @@ module.exports = class Email {
   // send the actual email
   async send(template, subject) {
     // 1) render html based on a pug template
-    // const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
-    //   firstName: this.firstName,
-    //   url: this.url,
-    //   subject,
-    // });
+    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+      firstName: this.firstName,
+      url: this.url,
+      subject,
+    });
 
     // 2) define email options
     const mailOptions = {
       from: this.from,
       to: this.to,
       subject,
+      html,
+      text: htmlToText.fromString(html),
       // html,
-      // text: htmlToText.fromString(html),
-      //html
     };
 
     // 3) create a transport and send email
@@ -66,5 +66,9 @@ module.exports = class Email {
       'passwordReset',
       'Your password reset token (valid for only 10 minutes)'
     );
+  }
+
+  async sendPasswordChangedSuccess() {
+    await this.send('passwordChangedSuccess', 'PasswordChanged');
   }
 };

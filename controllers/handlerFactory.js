@@ -68,6 +68,28 @@ exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // to allow for nested GET reviews on product (hack)
     let filter = {};
+    if (req.params.categoryId) filter = { category: req.params.categoryId };
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const doc = await features.query;
+
+    // SEND RESPONSE
+    res.status(200).json({
+      status: 'success',
+      results: doc.length,
+      data: {
+        data: doc,
+      },
+    });
+  });
+
+exports.getAllForProducts = (Model) =>
+  catchAsync(async (req, res, next) => {
+    // to allow for nested GET reviews on product (hack)
+    let filter = {};
     if (req.params.productId) filter = { product: req.params.productId };
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()

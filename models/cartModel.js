@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema(
   {
-    product: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Product',
-      //   required: [true, 'Cart must belong to a product'],
-    },
+    product: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Product',
+        //   required: [true, 'Cart must belong to a product'],
+      },
+    ],
     customer: {
       type: mongoose.Schema.ObjectId,
       ref: 'Customer',

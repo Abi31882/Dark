@@ -7,12 +7,14 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "html-to-text": "^8.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.7",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
     "nodemailer": "^6.6.3",
     "nodemon": "^2.0.12",
+    "pug": "^3.0.2",
     "sharp": "^0.29.1",
     "slugify": "^1.6.0",
     "validator": "^13.6.0"
@@ -32,8 +34,8 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "start": "set NODE_ENV = development&&nodemon server.js",
-    "start_prod": "set NODE_ENV = production&&nodemon server.js"
+    "start": "set NODE_ENV=development&&nodemon server.js",
+    "start_prod": "set NODE_ENV=production&&nodemon server.js"
   },
   "author": "Abi",
   "license": "ISC"

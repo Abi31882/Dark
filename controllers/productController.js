@@ -66,7 +66,8 @@ exports.aliasTopProducts = (req, res, next) => {
 };
 
 exports.setProductCustomerIds = (req, res, next) => {
-  if (!req.body.category) req.body.category = req.params.categoryId;
+  if (!req.body.productCategory)
+    req.body.productCategory = req.params.categoryId;
   if (!req.body.customer) req.body.customer = req.customer.id;
   next();
 };

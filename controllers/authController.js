@@ -234,10 +234,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   customer.passwordResetExpires = undefined;
   await customer.save();
 
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(customer, url).sendPasswordChangedSuccess();
+
   // 3) update changedPasswordAt property at the customer
   // 4) Log the customer in, send JWT
 
-  createSendToken(customer, 200, res);
+  createSendToken(customer, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {

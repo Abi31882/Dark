@@ -3,7 +3,7 @@ const slugify = require('slugify');
 
 const productSchema = new mongoose.Schema(
   {
-    category: {
+    productCategory: {
       type: mongoose.Schema.ObjectId,
       ref: 'Category',
       required: [true, 'A product must belong to a category'],

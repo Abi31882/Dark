@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
@@ -15,6 +16,9 @@ dotenv.config();
 const app = express({ path: './config.env' });
 
 app.use(express.json());
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 // development logging
 if (process.env.NODE_ENV === 'development') {
