@@ -37,21 +37,21 @@ router.route('/category-stats').get(categoryController.getCategoryStats);
 router.route('/').get(categoryController.getAllCategories);
 
 router
-  .route('/retailor/:retailorId')
+  .route('/user/:Id')
   .post(
     authController.protect,
     authController.restrictTo('admin', 'retailor'),
     categoryController.setMakerIds,
     categoryController.createCategory
   );
+router.route('/:id').get(categoryController.getCategory);
 router
-  .route('/:id')
-  .get(categoryController.getCategory)
   .patch(
+    '/:id/updateCategory',
     authController.protect,
     authController.restrictTo('admin', 'retailor'),
-    categoryController.uploadCategoryImages,
-    categoryController.resizeCategoryImages,
+    categoryController.uploadCategoryPhoto,
+    categoryController.resizeCategoryPhoto,
     categoryController.updateCategory
   )
   .delete(

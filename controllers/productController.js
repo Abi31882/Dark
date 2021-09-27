@@ -11,7 +11,13 @@ const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new AppError('Not an image! Please upload only images.', 400), false);
+    cb(
+      new AppError(
+        'Not an image! Please upload only images of jpg format.',
+        400
+      ),
+      false
+    );
   }
 };
 
@@ -21,24 +27,34 @@ const upload = multer({
 });
 
 exports.uploadProductImages = upload.fields([
+  { name: 'imageFront', maxCount: 1 },
   { name: 'imageCover', maxCount: 1 },
-  { name: 'images', imageCount: 3 },
+  { name: 'images', maxCount: 5 },
 ]);
 
 exports.resizeProductImages = catchAsync(async (req, res, next) => {
   // console.log(req.files);
 
-  if (!req.files.imageCover || !req.files.images) return next();
+  if (!req.files.imageCover || !req.files.imageFront || !req.files.images)
+    return next();
 
-  // 1) cover image
+  // 1) Front image
+  req.body.imageFront = `product-${req.params.id}-${Date.now()}-front.jpeg`;
+  await sharp(req.files.imageFront[0].buffer)
+    .resize(150, 150)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/products/${req.body.imageFront}`);
+
+  // 2) cover image
   req.body.imageCover = `product-${req.params.id}-${Date.now()}-cover.jpeg`;
   await sharp(req.files.imageCover[0].buffer)
-    .resize(2000, 1333)
+    .resize(640, 640)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`public/img/products/${req.body.imageCover}`);
 
-  // 2) images
+  // 3) images
   req.body.images = [];
 
   await Promise.all(
@@ -46,7 +62,7 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
       const filename = `product-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
 
       await sharp(file.buffer)
-        .resize(2000, 1333)
+        .resize(640, 640)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
         .toFile(`public/img/products/${filename}`);

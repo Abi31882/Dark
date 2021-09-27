@@ -27,18 +27,23 @@ router.patch(
 );
 router.delete('/deleteMe', customerController.deleteMe);
 
-router.use(authController.restrictTo('admin'));
+// router.route('/:id').patch()
+
+// router.use(authController.restrictTo('admin'));
 
 router
   .route('/')
-  .get(customerController.getAllCustomers)
-  .post(customerController.createCustomer);
+  .get(authController.restrictTo('admin'), customerController.getAllCustomers)
+  .post(authController.restrictTo('admin'), customerController.createCustomer);
 
 router
   .route('/:id')
-  .get(customerController.getCustomer)
+  .get(authController.restrictTo('admin'), customerController.getCustomer)
   .patch(customerController.updateCustomer)
-  .delete(customerController.deleteCustomer);
+  .delete(
+    authController.restrictTo('admin'),
+    customerController.deleteCustomer
+  );
 
 module.exports = router;
 

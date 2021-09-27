@@ -20,46 +20,68 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadCategoryImages = upload.fields([
-  { name: 'imageCover', maxCount: 1 },
-  //   { name: 'images', imageCount: 3 },
-]);
+exports.uploadCategoryPhoto = upload.single('photo');
 
-exports.resizeCategoryImages = catchAsync(async (req, res, next) => {
-  // console.log(req.files);
+exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
 
-  if (!req.files.imageCover || !req.files.images) return next();
+  req.file.filename = `category-${req.customer.id}-${Date.now()}.jpeg`;
 
-  // 1) cover image
-  req.body.imageCover = `category-${req.params.id}-${Date.now()}-cover.jpeg`;
-  await sharp(req.files.imageCover[0].buffer)
-    .resize(2000, 1333)
+  await sharp(req.file.buffer)
+    .resize(150, 150)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/categories/${req.body.imageCover}`);
-
-  // 2) images
-  //   req.body.images = [];
-
-  //   await Promise.all(
-  //     req.files.images.map(async (file, i) => {
-  //       const filename = `category-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
-
-  //       await sharp(file.buffer)
-  //         .resize(2000, 1333)
-  //         .toFormat('jpeg')
-  //         .jpeg({ quality: 90 })
-  //         .toFile(`public/img/categoriess/${filename}`);
-
-  //       req.body.images.push(filename);
-  //     })
-  //   );
+    .toFile(`public/img/categories/${req.file.filename}`);
 
   next();
 });
 
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
+
+exports.updateCategory = catchAsync(async (req, res, next) => {
+  // console.log(req.file);
+  // console.log(req.body);
+
+  // 1) Create error if customer POSTs password data
+  if (req.body.maker) {
+    return next(
+      new AppError(
+        'This route is not for password updates. Please use /updateMyPassword.',
+        400
+      )
+    );
+  }
+
+  // 2) Filtered out unwanted fields names that are not allowed to be updated
+  const filteredBody = filterObj(req.body, 'maker');
+  if (req.file) filteredBody.photo = req.file.filename;
+
+  // 3) Update customer document
+  const updatedCategory = await Category.findByIdAndUpdate(
+    req.category.id,
+    filteredBody,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      category: updatedCategory,
+    },
+  });
+});
+
 exports.setMakerIds = (req, res, next) => {
-  if (!req.body.maker) req.body.maker = req.params.retailorId;
+  if (!req.body.maker) req.body.maker = req.params.Id;
   next();
 };
 

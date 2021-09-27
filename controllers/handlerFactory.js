@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
+// const Category = require('../models/categoryModel');
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -45,6 +46,27 @@ exports.createOne = (Model) =>
       },
     });
   });
+
+// exports.createCategory = (Model, popOptions) =>
+//   catchAsync(async (req, res, next) => {
+
+//     const newDoc = await Model.create(req.body);
+
+//     let query = Customer.findById(req.params.id);
+//     if (popOptions) query = query.populate(popOptions);
+//     const doc = await query;
+
+//     if (!doc) {
+//       return next(new AppError('No document found with that ID', 404));
+//     }
+
+//     res.status(201).json({
+//       status: 'success',
+//       data: {
+//         data: newDoc,
+//       },
+//     });
+//   });
 
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
