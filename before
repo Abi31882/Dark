@@ -45,12 +45,11 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "set NODE_ENV=development&&nodemon server.js",
+    "start_prod": "set NODE_ENV=production&&nodemon server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "author": "Abi",
   "license": "ISC"
 }
-
-
