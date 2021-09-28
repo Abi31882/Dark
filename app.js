@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -10,10 +9,9 @@ const customerRouter = require('./routes/customerRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const categoryRouter = require('./routes/categoryRoutes');
 const cartRouter = require('./routes/cartRoutes');
+const bookingRouter = require('./routes/orderRoutes');
 
-dotenv.config();
-
-const app = express({ path: './config.env' });
+const app = express();
 
 app.use(express.json());
 
@@ -41,6 +39,7 @@ app.use('/api/v1/products', productRouter);
 app.use('/api/v1/customers', customerRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/cart', cartRouter);
+app.use('/api/v1/orders', bookingRouter);
 
 // app.use('/api/v1/bookings', bookingRouter);
 
