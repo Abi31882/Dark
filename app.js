@@ -21,6 +21,7 @@ const categoryRouter = require('./routes/categoryRoutes');
 const cartRouter = require('./routes/cartRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const orderController = require('./controllers/orderController');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
@@ -44,7 +45,7 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour',
 });
-app.use('/api', limiter);
+app.use('/', limiter);
 
 app.post(
   '/webhook-checkout',
@@ -92,14 +93,16 @@ app.use(compression());
 // START EXPRESS APP
 
 // 2) Routes
-app.use('/api/v1/categories', categoryRouter);
-app.use('/api/v1/products', productRouter);
-app.use('/api/v1/customers', customerRouter);
-app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/v1/cart', cartRouter);
-app.use('/api/v1/orders', orderRouter);
+app.use('/', viewRouter);
 
-// app.use('/api/v1/bookings', orderRouter);
+app.use('/categories', categoryRouter);
+app.use('/products', productRouter);
+app.use('/customers', customerRouter);
+app.use('/reviews', reviewRouter);
+app.use('/cart', cartRouter);
+app.use('/orders', orderRouter);
+
+// app.use('/bookings', orderRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`));
