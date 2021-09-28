@@ -73,7 +73,6 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) IF EVERYTHING OK, SEND TOKEN TO CLIENT
-
   createSendToken(customer, 200, req, res);
 });
 
