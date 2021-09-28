@@ -5,12 +5,12 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Product',
     required: [true, 'Order must belong to Product'],
+    unique: true,
   },
   customer: {
     type: mongoose.Schema.ObjectId,
     ref: 'Customer',
     required: [true, 'Order must belong to a Customer'],
-    unique: true,
   },
   price: {
     type: Number,

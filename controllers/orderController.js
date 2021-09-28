@@ -13,6 +13,10 @@ exports.setProductCustomerIds = catchAsync(async (req, res, next) => {
   if (!req.body.customer) req.body.customer = req.customer.id;
 
   const product = await Product.findById(req.params.productId);
+
+  if (!product) {
+    return next(new AppError('no document found', 404));
+  }
   const { price } = product;
 
   if (!req.body.price) req.body.price = price;
@@ -92,7 +96,7 @@ exports.webhookCheckout = (req, res, next) => {
   res.status(200).json({ received: true });
 };
 
-exports.createOrder = factory.createOne(Order);
+// exports.createOrder = factory.createOne(Order);
 exports.getOrder = factory.getOne(Order);
 exports.getAllOrders = factory.getAll(Order);
 exports.updateOrders = factory.updateOne(Order);
@@ -109,5 +113,23 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: products,
+  });
+});
+
+exports.createOrder = catchAsync(async (req, res, next) => {
+  const newDoc = await Order.create(req.body);
+
+  const product = await Product.findById(req.body.product);
+  const customer = await Customer.findById(req.body.customer);
+
+  if (!product || !customer) {
+    return next(new AppError('no document or duplicate one', 404));
+  }
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: newDoc,
+    },
   });
 });
