@@ -30,7 +30,7 @@ app.enable('trust proxy');
 app.use(express.json());
 
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'app/views'));
 
 app.use(cors());
 
