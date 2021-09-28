@@ -9,33 +9,24 @@ router.use(authController.protect);
 router
   .route('/')
   .post(authController.restrictTo('customer'), cartController.addToCart)
+  .patch(authController.restrictTo('customer'), cartController.updateQuantity)
   .delete(authController.restrictTo('customer'), cartController.deleteFromCart);
 
 router
   .route('/all')
   .get(authController.restrictTo('admin'), cartController.getAllCarts);
 
-// router.route('/').get(cartController.getAllCarts).post(
-//   authController.restrictTo('customer'),
-//   // cartController.setProductId,
-//   cartController.createCart
-// );
-
 router.use(cartController.setCustomerId);
 
-router.route('/customer/:customerId').post(
-  authController.restrictTo('customer', 'retailor'),
+router.route('/create').post(
+  authController.restrictTo('customer'),
 
   cartController.createCart
 );
 
 router
-  .route('/:id')
+  .route('/myCart/:id')
   .get(cartController.getCart)
-  .patch(
-    authController.restrictTo('customer', 'admin'),
-    cartController.updateCart
-  )
   .delete(
     authController.restrictTo('customer', 'admin'),
     cartController.deleteCart

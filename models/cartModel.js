@@ -12,6 +12,7 @@ const cartSchema = new mongoose.Schema(
     customer: {
       type: mongoose.Schema.ObjectId,
       ref: 'Customer',
+      unique: true,
       required: [true, 'cart must belong to a customer'],
     },
   },

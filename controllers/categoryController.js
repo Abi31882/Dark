@@ -5,13 +5,91 @@ const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
 
+// const multerStorage = multer.memoryStorage();
+
+// const multerFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith('image')) {
+//     cb(null, true);
+//   } else {
+//     cb(new AppError('Not an image! Please upload only images.', 400), false);
+//   }
+// };
+
+// const upload = multer({
+//   storage: multerStorage,
+//   fileFilter: multerFilter,
+// });
+
+// exports.uploadCategoryPhoto = upload.single('photo');
+
+// exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
+//   if (!req.file) return next();
+
+//   req.file.filename = `category-${req.params.id}-${Date.now()}.jpeg`;
+
+//   await sharp(req.file.buffer)
+//     .resize(150, 150)
+//     .toFormat('jpeg')
+//     .jpeg({ quality: 90 })
+//     .toFile(`public/img/categories/${req.file.filename}`);
+
+//   next();
+// });
+
+// const filterObj = (obj, ...allowedFields) => {
+//   const newObj = {};
+//   Object.keys(obj).forEach((el) => {
+//     if (allowedFields.includes(el)) newObj[el] = obj[el];
+//   });
+//   return newObj;
+// };
+
+// exports.updateCategory = catchAsync(async (req, res, next) => {
+//   // 1) Create error if customer POSTs password data
+//   if (req.body.maker || req.boby.categoryName) {
+//     return next(
+//       new AppError(
+//         'This route is not to change the maker or the categoryName of the category',
+//         400
+//       )
+//     );
+//   }
+
+//   // 2) Filtered out unwanted fields names that are not allowed to be updated
+//   const filteredBody = filterObj(req.body, 'maker', 'categoryName');
+//   if (req.file) filteredBody.photo = req.file.filename;
+
+//   // 3) Update customer document
+//   const updatedCategory = await Category.findByIdAndUpdate(
+//     req.params.id,
+//     filteredBody,
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       category: updatedCategory,
+//     },
+//   });
+// });
+
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new AppError('Not an image! Please upload only images.', 400), false);
+    cb(
+      new AppError(
+        'Not an image! Please upload only images of jpg format.',
+        400
+      ),
+      false
+    );
   }
 };
 
@@ -20,75 +98,54 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadCategoryPhoto = upload.single('photo');
+exports.uploadCategoryPhoto = upload.fields([
+  { name: 'photo', maxCount: 1 },
+  // { name: 'imageCover', maxCount: 1 },
+  // { name: 'images', maxCount: 5 },
+]);
 
 exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
-  if (!req.file) return next();
+  // console.log(req.files);
 
-  req.file.filename = `category-${req.customer.id}-${Date.now()}.jpeg`;
+  if (!req.files.photo) return next();
 
-  await sharp(req.file.buffer)
+  // 1) Front image
+  req.body.photo = `category-${req.params.id}-${Date.now()}.jpeg`;
+  await sharp(req.files.photo[0].buffer)
     .resize(150, 150)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/categories/${req.file.filename}`);
+    .toFile(`public/img/categories/${req.body.photo}`);
 
+  // 2) cover image
+  // req.body.imageCover = `product-${req.params.id}-${Date.now()}-cover.jpeg`;
+  // await sharp(req.files.imageCover[0].buffer)
+  //   .resize(640, 640)
+  //   .toFormat('jpeg')
+  //   .jpeg({ quality: 90 })
+  //   .toFile(`public/img/products/${req.body.imageCover}`);
+
+  // 3) images
+  // req.body.images = [];
+
+  // await Promise.all(
+  //   req.files.images.map(async (file, i) => {
+  //     const filename = `product-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+
+  //     await sharp(file.buffer)
+  //       .resize(640, 640)
+  //       .toFormat('jpeg')
+  //       .jpeg({ quality: 90 })
+  //       .toFile(`public/img/products/${filename}`);
+
+  //     req.body.images.push(filename);
+  //   })
+  // );
   next();
-});
-
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
-  Object.keys(obj).forEach((el) => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
-
-exports.updateCategory = catchAsync(async (req, res, next) => {
-  // console.log(req.file);
-  // console.log(req.body);
-
-  // 1) Create error if customer POSTs password data
-  if (req.body.maker) {
-    return next(
-      new AppError(
-        'This route is not for password updates. Please use /updateMyPassword.',
-        400
-      )
-    );
-  }
-
-  // 2) Filtered out unwanted fields names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, 'maker');
-  if (req.file) filteredBody.photo = req.file.filename;
-
-  // 3) Update customer document
-  const updatedCategory = await Category.findByIdAndUpdate(
-    req.category.id,
-    filteredBody,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      category: updatedCategory,
-    },
-  });
 });
 
 exports.setMakerIds = (req, res, next) => {
-  if (!req.body.maker) req.body.maker = req.params.Id;
-  next();
-};
-
-exports.aliasTopCategories = (req, res, next) => {
-  req.query.limit = '5';
-  req.query.sort = '-ratingsAverage,price';
-  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  if (!req.body.maker) req.body.maker = req.customer.id;
   next();
 };
 
@@ -100,38 +157,6 @@ exports.getCategory = factory.getOne(Category, {
 exports.createCategory = factory.createOne(Category);
 exports.updateCategory = factory.updateOne(Category);
 exports.deleteCategory = factory.deleteOne(Category);
-
-exports.getCategoryStats = catchAsync(async (req, res, next) => {
-  const stats = await Category.aggregate([
-    {
-      $match: { ratingsAverage: { $gte: 4.5 } },
-    },
-    {
-      $group: {
-        _id: { $toUpper: '$ratingsQuantity' },
-        numCategories: { $sum: 1 },
-        numRatings: { $sum: '$ratingsQuantity' },
-        avgRating: { $avg: '$ratingsAverage' },
-        avgPrice: { $avg: '$price' },
-        minPrice: { $min: '$price' },
-        maxPrice: { $max: '$price' },
-      },
-    },
-    {
-      $sort: { averagePrice: 1 },
-    },
-    {
-      $match: { _id: { $ne: 'EASY' } },
-    },
-  ]);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      stats,
-    },
-  });
-});
 
 // exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
 //   const year = req.params.year * 1;

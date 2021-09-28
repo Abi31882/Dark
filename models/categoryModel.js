@@ -33,7 +33,6 @@ const categorySchema = new mongoose.Schema(
     photo: {
       type: String,
       default: 'defaultCategory.jpg',
-      //   required: [true, 'A category hmust have a cover image'],
     },
     createdAt: {
       type: Date,

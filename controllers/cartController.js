@@ -6,12 +6,11 @@ const AppError = require('../utils/appError');
 const Product = require('../models/productModel');
 
 exports.setCustomerId = (req, res, next) => {
-  if (!req.body.customer) req.body.customer = req.params.customerId;
+  if (!req.body.customer) req.body.customer = req.customer.id;
   next();
 };
 
 exports.addToCart = catchAsync(async (req, res, next) => {
-  // let product = [];
   const cart = await Cart.findById(req.params.cartId);
   const products = await Product.findById(req.params.productId);
   if (!cart) {
@@ -23,13 +22,65 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     );
   }
 
-  cart.product.push(products);
-  await cart.save({ validateBeforeSave: false });
+  if (!products) {
+    return next(
+      new AppError(
+        'Sorry, there is no such product, please specify correctly',
+        404
+      )
+    );
+  }
+
+  const product = cart.product.map((el) => el.id === req.params.productId);
+
+  if (product) {
+    return next(
+      new AppError(
+        'this product is already in the cart, please increase the quantity manually',
+        404
+      )
+    );
+  }
 
   res.status(200).json({
     status: 'success',
-    cart,
+    results: cart.product.length,
+    data: cart,
   });
+});
+
+exports.updateQuantity = catchAsync(async (req, res, next) => {
+  const cart = await Cart.findById(req.params.cartId);
+
+  if (!cart) {
+    return next(new AppError('there is no cart', 404));
+  }
+
+  const product = cart.product.map((el) => el.id === req.params.productId);
+
+  if (!product) {
+    return next(
+      new AppError(
+        'Sorry, there is no such product, please specify correctly',
+        404
+      )
+    );
+  }
+
+  if (product) {
+    product.quantity = req.body.quantity;
+
+    await cart.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        quantity: product.quantity,
+      },
+    });
+  } else {
+    next();
+  }
 });
 
 exports.deleteFromCart = catchAsync(async (req, res, next) => {
@@ -51,42 +102,22 @@ exports.deleteFromCart = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllCarts = factory.getAll(Cart);
-exports.getCart = factory.getOne(Cart);
 exports.createCart = factory.createOne(Cart);
 exports.updateCart = factory.updateOne(Cart);
 exports.deleteCart = factory.deleteOne(Cart);
 
-// exports.forgotPassword = catchAsync(async (req, res, next) => {
-//   //1) get customer based on posted email
-//   const customer = await Customer.findOne({ email: req.body.email });
-//   if (!customer) {
-//     return next(
-//       new AppError('there is no customer with this email address', 404)
-//     );
-//   }
+exports.getCart = catchAsync(async (req, res, next) => {
+  const cart = await Cart.findById(req.params.id);
 
-//   // 2) generate the random reset token
-//   const resetToken = customer.createPasswordResetToken();
-//   await customer.save({ validateBeforeSave: false });
+  if (!cart) {
+    return next(new AppError('No Cart found with that ID', 404));
+  }
 
-//   // 3) send it to customer's email
-//   try {
-//     const resetURL = `${req.protocol}://${req.get(
-//       'host'
-//     )}/api/v1/customers/resetPassword/${resetToken}`;
-//     await new Email(customer, resetURL).sendPasswordReset();
-
-//     res.status(200).json({
-//       status: 'success',
-//       message: 'token sent to email',
-//     });
-//   } catch (err) {
-//     customer.passwordResetToken = undefined;
-//     customer.passwordResetExpires = undefined;
-//     await customer.save({ validateBeforeSave: false });
-
-//     return next(
-//       new AppError('there was an error sending the email, try again later', 500)
-//     );
-//   }
-// });
+  res.status(200).json({
+    status: 'success',
+    results: cart.product.length,
+    data: {
+      data: cart,
+    },
+  });
+});

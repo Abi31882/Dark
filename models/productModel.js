@@ -52,6 +52,10 @@ const productSchema = new mongoose.Schema(
       trim: true,
       //   required: [true, 'A product must have a description'],
     },
+    quantity: {
+      type: Number,
+      default: 1,
+    },
     description: {
       type: String,
       trim: true,

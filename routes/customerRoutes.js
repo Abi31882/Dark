@@ -1,11 +1,11 @@
 const express = require('express');
 const customerController = require('../controllers/customerController');
 const authController = require('../controllers/authController');
-const cartRouter = require('./cartRoutes');
+// const cartRouter = require('./cartRoutes');
 
 const router = express.Router();
 
-router.use('/:customerId/cart', cartRouter);
+// router.use('/:customerId/cart', cartRouter);
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);

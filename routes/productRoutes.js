@@ -9,8 +9,9 @@ const router = express.Router({ mergeParams: true });
 router.use('/:productId/cart/:cartId', cartRouter);
 router.use('/:productId/reviews', reviewRouter);
 
-router.route('/top-5-cheap').get(productController.getAllProducts);
-router.route('/product-stats').get(productController.getProductStats);
+router
+  .route('/top-cheap')
+  .get(productController.aliasTopProducts, productController.getAllProducts);
 
 router
   .route('/')
