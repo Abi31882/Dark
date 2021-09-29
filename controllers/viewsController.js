@@ -14,28 +14,28 @@ const AppError = require('../utils/appError');
 
 exports.getOverview = catchAsync(async (req, res) => {
   // 1) get product data from collection
-  const products = await Product.find();
+  const doc = await Product.find();
 
   res.status(200).json({
     status: 'success',
-    products,
+    doc,
   });
 });
 
 exports.getProduct = catchAsync(async (req, res, next) => {
   // 1) get the data, for the requested product (including reviews and guides)
-  const product = await Product.findById(req.params.productId).populate({
+  const doc = await Product.findById(req.params.productId).populate({
     path: 'reviews',
     fields: 'review rating customer',
   });
 
-  if (!product) {
-    return next(new AppError('There is no product with that name.', 404));
+  if (!doc) {
+    return next(new AppError('There is no doc with that name.', 404));
   }
 
   res.status(200).json({
     status: 'success',
-    product,
+    doc,
   });
 });
 
@@ -51,16 +51,16 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 
   // 2) find product with the returned id
   const productIDs = orders.map((el) => el.product);
-  const products = await Product.find({ _id: { $in: productIDs } });
+  const doc = await Product.find({ _id: { $in: productIDs } });
 
   res.status(200).json({
     status: 'success',
-    products,
+    doc,
   });
 });
 
 exports.updateCustomerData = catchAsync(async (req, res, next) => {
-  const updatedCustomer = await Customer.findByIdAndUpdate(
+  const doc = await Customer.findByIdAndUpdate(
     req.customer.id,
     {
       name: req.body.name,
@@ -74,6 +74,6 @@ exports.updateCustomerData = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    updatedCustomer,
+    doc,
   });
 });

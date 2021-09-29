@@ -108,16 +108,16 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 
   // 2) find tour with the returned id
   const productIDs = orders.map((el) => el.product);
-  const products = await Product.find({ _id: { $in: productIDs } });
+  const doc = await Product.find({ _id: { $in: productIDs } });
 
   res.status(200).json({
     status: 'success',
-    products,
+    doc,
   });
 });
 
 exports.createOrder = catchAsync(async (req, res, next) => {
-  const newDoc = await Order.create(req.body);
+  const doc = await Order.create(req.body);
 
   const product = await Product.findById(req.body.product);
   const customer = await Customer.findById(req.body.customer);
@@ -128,6 +128,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    newDoc,
+    doc,
   });
 });

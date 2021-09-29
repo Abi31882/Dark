@@ -77,18 +77,14 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.file) filteredBody.photo = req.file.filename;
 
   // 3) Update customer document
-  const updatedCustomer = await Customer.findByIdAndUpdate(
-    req.customer.id,
-    filteredBody,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const doc = await Customer.findByIdAndUpdate(req.customer.id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
 
   res.status(200).json({
     status: 'success',
-    updatedCustomer,
+    doc,
   });
 });
 

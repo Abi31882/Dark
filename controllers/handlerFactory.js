@@ -35,11 +35,11 @@ exports.updateOne = (Model) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const newDoc = await Model.create(req.body);
+    const doc = await Model.create(req.body);
 
     res.status(201).json({
       status: 'success',
-      newDoc,
+      doc,
     });
   });
 
@@ -49,11 +49,11 @@ exports.createOneProduct = (Model) =>
 
     if (category) {
       try {
-        const newDoc = await Model.create(req.body);
+        const doc = await Model.create(req.body);
 
         res.status(201).json({
           status: 'success',
-          newDoc,
+          doc,
         });
       } catch (err) {
         res.status(404).json({

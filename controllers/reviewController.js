@@ -19,11 +19,11 @@ exports.createReview = catchAsync(async (req, res, next) => {
 
   if (product) {
     try {
-      const newDoc = await Review.create(req.body);
+      const doc = await Review.create(req.body);
 
       res.status(201).json({
         status: 'success',
-        newDoc,
+        doc,
       });
     } catch (err) {
       res.status(404).json({
@@ -44,12 +44,12 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
   // to allow for nested GET reviews on product (hack)
   let filter = {};
   if (req.params.productId) filter = { product: req.params.productId };
-  const review = await Review.find(filter);
+  const doc = await Review.find(filter);
 
   // SEND RESPONSE
   res.status(200).json({
     status: 'success',
-    results: review.length,
-    review,
+    results: doc.length,
+    doc,
   });
 });

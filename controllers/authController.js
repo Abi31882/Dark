@@ -13,8 +13,8 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-const createSendToken = (customer, statusCode, req, res) => {
-  const token = signToken(customer._id);
+const createSendToken = (doc, statusCode, req, res) => {
+  const token = signToken(doc._id);
 
   res.cookie('jwt', token, {
     expires: new Date(
@@ -24,12 +24,12 @@ const createSendToken = (customer, statusCode, req, res) => {
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   });
   // remove the password from the output
-  customer.password = undefined;
+  doc.password = undefined;
 
   res.status(statusCode).json({
     status: 'success',
     token,
-    customer,
+    doc,
   });
 };
 
