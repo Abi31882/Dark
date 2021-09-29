@@ -29,9 +29,7 @@ exports.updateOne = (Model) =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });
 
@@ -41,9 +39,7 @@ exports.createOne = (Model) =>
 
     res.status(201).json({
       status: 'success',
-      data: {
-        data: newDoc,
-      },
+      newDoc,
     });
   });
 
@@ -57,9 +53,7 @@ exports.createOneProduct = (Model) =>
 
         res.status(201).json({
           status: 'success',
-          data: {
-            data: newDoc,
-          },
+          newDoc,
         });
       } catch (err) {
         res.status(404).json({
@@ -88,9 +82,7 @@ exports.getOne = (Model, popOptions) =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });
 
@@ -111,8 +103,6 @@ exports.getAll = (Model) =>
     res.status(200).json({
       status: 'success',
       results: doc.length,
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });

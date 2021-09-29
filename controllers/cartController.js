@@ -45,7 +45,7 @@ exports.addToCart = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: cart.product.length,
-    data: cart,
+    cart,
   });
 });
 
@@ -74,9 +74,7 @@ exports.updateQuantity = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: {
-        quantity: product.quantity,
-      },
+      quantity: product.quantity,
     });
   } else {
     next();
@@ -116,8 +114,6 @@ exports.getCart = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: cart.product.length,
-    data: {
-      data: cart,
-    },
+    cart,
   });
 });

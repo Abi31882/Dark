@@ -23,9 +23,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
 
       res.status(201).json({
         status: 'success',
-        data: {
-          data: newDoc,
-        },
+        newDoc,
       });
     } catch (err) {
       res.status(404).json({
@@ -52,8 +50,6 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: review.length,
-    data: {
-      data: review,
-    },
+    review,
   });
 });

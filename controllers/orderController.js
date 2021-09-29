@@ -112,7 +112,7 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: products,
+    products,
   });
 });
 
@@ -128,8 +128,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    data: {
-      data: newDoc,
-    },
+    newDoc,
   });
 });
