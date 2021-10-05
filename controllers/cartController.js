@@ -16,7 +16,7 @@ exports.addToCart = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(
       new AppError(
-        'Sorry, there is no doc created, please create a doc first',
+        'Sorry, there is no cart created, please create a cart first',
         404
       )
     );
@@ -31,15 +31,18 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     );
   }
 
-  const product = doc.product.map((el) => el.id === req.params.productId);
-
-  if (product) {
+  if (doc.product.includes(products)) {
     return next(
       new AppError(
         'this product is already in the doc, please increase the quantity manually',
         404
       )
     );
+  }
+
+  if (!doc.product.includes(products)) {
+    doc.product.push(products);
+    await doc.save({ validateBeforeSave: false });
   }
 
   res.status(200).json({

@@ -37,14 +37,6 @@ const reviewSchema = new mongoose.Schema(
 reviewSchema.index({ product: 1, customer: 1 }, { unique: true });
 
 reviewSchema.pre(/^find/, function (next) {
-  // this.populate({
-  //   path: 'product',
-  //   select: 'name',
-  // }).populate({
-  //   path: 'customer',
-  //   select: 'name photo',
-  // });
-
   this.populate({
     path: 'customer',
     select: 'name',
@@ -86,17 +78,6 @@ reviewSchema.post('save', function () {
 
   this.constructor.calcAverageRatings(this.product);
 });
-
-// reviewSchema.pre(/^findOneAnd/, async function (next) {
-//   this.r = await this.findOne();
-//   // console.log(this.r);
-//   next();
-// });
-
-// reviewSchema.post(/^findOneAnd/, async function () {
-//   // await this.findOne();, does NOT work here, query has already executed
-//   await this.r.constructor.calcAverageRatings(this.r.product);
-// });
 
 const Review = mongoose.model('Review', reviewSchema);
 

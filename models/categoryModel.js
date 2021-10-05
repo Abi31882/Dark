@@ -46,75 +46,11 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-// categorySchema.index({ price: 1 });
-// categorySchema.index({ price: 1, ratingsAverage: -1 });
-// categorySchema.index({ slug: 1 });
-// categorySchema.index({ startLocation: '2dsphere' });
-
-// categorySchema.virtual('durationWeeks').get(function () {
-//   return this.duration / 7;
-// });
-
-// Virtual populate
-// categorySchema.virtual('reviews', {
-//   ref: 'Review',
-//   foreignField: 'category',
-//   localField: '_id',
-// });
-
 // Document Middlewares
 categorySchema.pre('save', function (next) {
   this.slug = slugify(this.categoryName, { lower: true });
   next();
 });
-
-// categorySchema.pre('save', async function (req, res, next) {
-//   const customer = await Customer.findById(req.customer.id);
-
-//   this.maker = customer.id;
-//   next();
-// });
-
-// categorySchema.pre('save', async function (next) {
-//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
-//   this.guides = await Promise.all(guidesPromises);
-//   next();
-// });
-
-// categorySchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'maker',
-//     select: '-__v -passwordChangedAt',
-//   });
-//   next();
-// });
-
-// categorySchema.post('save', function (doc, next) {
-//   console.log(doc);
-//   next();
-// });
-
-// Query Middlewares
-// categorySchema.pre(/^find/, function (next) {
-//   this.find({ secretTour: { $ne: true } });
-
-//   this.start = Date.now();
-//   next();
-// });
-
-// categorySchema.post(/^find/, function (docs, next) {
-//   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-//   console.log(docs);
-//   next();
-// });
-
-// Aggregation Middleware
-// categorySchema.pre('aggregate', function (next) {
-//   this.pipeline().unshift({ $match: { secrettour: { $ne: true } } });
-
-//   console.log(this);
-//   next();
-// });
 
 const Category = mongoose.model('Category', categorySchema);
 

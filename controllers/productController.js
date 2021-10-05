@@ -4,6 +4,7 @@ const Product = require('../models/productModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
+const APIFeatures = require('../utils/apiFeatures');
 
 const multerStorage = multer.memoryStorage();
 
@@ -88,8 +89,27 @@ exports.setProductCustomerIds = (req, res, next) => {
   next();
 };
 
-exports.getAllProducts = factory.getAll(Product);
+exports.getAllProductsByCategory = factory.getAll(Product);
 exports.getProduct = factory.getOne(Product, { path: 'reviews' });
 exports.createProduct = factory.createOneProduct(Product);
 exports.updateProduct = factory.updateOne(Product);
 exports.deleteProduct = factory.deleteOne(Product);
+
+exports.getAllProducts = catchAsync(async (req, res, next) => {
+  // to allow for nested GET reviews on product (hack)
+  let filter = {};
+  if (req.params.slug) filter = { slug: req.params.slug };
+  const features = new APIFeatures(Product.find(filter), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const doc = await features.query;
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: 'success',
+    results: doc.length,
+    doc,
+  });
+});

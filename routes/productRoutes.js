@@ -13,9 +13,11 @@ router
   .route('/top-cheap')
   .get(productController.aliasTopProducts, productController.getAllProducts);
 
+router.route('/:slug').get(productController.getAllProducts);
+
 router
   .route('/')
-  .get(productController.getAllProducts)
+  .get(productController.getAllProductsByCategory)
   .post(
     authController.protect,
     authController.restrictTo('admin', 'retailor'),
