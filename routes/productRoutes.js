@@ -11,9 +11,10 @@ router.use('/:productId/reviews', reviewRouter);
 
 router
   .route('/top-cheap')
-  .get(productController.aliasTopProducts, productController.getAllProducts);
-
-router.route('/:slug').get(productController.getAllProducts);
+  .get(
+    productController.aliasTopProducts,
+    productController.getAllProductsByCategory
+  );
 
 router
   .route('/')
