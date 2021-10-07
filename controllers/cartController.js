@@ -54,11 +54,7 @@ exports.addToCart = catchAsync(async (req, res, next) => {
   //   );
   // }
 
-  res.status(200).json({
-    status: 'success',
-    results: doc.product.length,
-    doc,
-  });
+  res.status(200).json(doc);
 });
 
 exports.updateQuantity = catchAsync(async (req, res, next) => {
@@ -107,10 +103,7 @@ exports.deleteFromCart = catchAsync(async (req, res, next) => {
 
   await doc.save({ validateBeforeSave: false });
 
-  res.status(200).json({
-    status: 'success',
-    doc,
-  });
+  res.status(200).json(doc);
 });
 
 exports.getAllCarts = factory.getAll(Cart);
@@ -125,9 +118,5 @@ exports.getCart = catchAsync(async (req, res, next) => {
     return next(new AppError('No Cart found with that ID', 404));
   }
 
-  res.status(200).json({
-    status: 'success',
-    results: doc.product.length,
-    doc,
-  });
+  res.status(200).json(doc);
 });

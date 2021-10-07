@@ -10,10 +10,7 @@ exports.deleteOne = (Model) =>
     if (!doc) {
       return next(new AppError('No document found with that ID', 404));
     }
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
+    res.status(204).json(null);
   });
 
 exports.updateOne = (Model) =>
@@ -37,10 +34,7 @@ exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.create(req.body);
 
-    res.status(201).json({
-      status: 'success',
-      doc,
-    });
+    res.status(201).json(doc);
   });
 
 exports.createOneProduct = (Model) =>
@@ -56,16 +50,10 @@ exports.createOneProduct = (Model) =>
           doc,
         });
       } catch (err) {
-        res.status(404).json({
-          status: 'there is no category',
-          err,
-        });
+        res.status(404).json(err);
       }
     } else {
-      res.status(404).json({
-        status: 'fail',
-        message: 'there is no category matched',
-      });
+      res.status(404).json('there is no category matched');
     }
     next();
   });
@@ -118,10 +106,6 @@ exports.getAll = (Model) =>
       const doc = await features.query;
 
       // SEND RESPONSE
-      res.status(200).json({
-        status: 'success',
-        results: doc.length,
-        doc,
-      });
+      res.status(200).json(doc);
     }
   });
