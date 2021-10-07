@@ -1,5 +1,4 @@
 const Cart = require('../models/cartModel');
-// const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -31,9 +30,7 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     );
   }
 
-  const product = doc.product.map((el) => el.id === req.params.productId);
-
-  if (product) {
+  if (doc.product.includes(req.params.productId)) {
     return next(
       new AppError(
         'this product is already in the doc, please increase the quantity manually',
@@ -41,6 +38,21 @@ exports.addToCart = catchAsync(async (req, res, next) => {
       )
     );
   }
+  doc.product.push(req.params.productId);
+
+  await doc.save({ validateBeforeSave: false });
+
+  // const product = await doc.product.map((el) => el === req.params.productId);
+  // console.log(product);
+
+  // if (product) {
+  //   return next(
+  //     new AppError(
+  //       'this product is already in the doc, please increase the quantity manually',
+  //       404
+  //     )
+  //   );
+  // }
 
   res.status(200).json({
     status: 'success',
@@ -89,6 +101,8 @@ exports.deleteFromCart = catchAsync(async (req, res, next) => {
 
   if (products) {
     doc.product.splice(index, 1);
+  } else {
+    return next(new AppError('the product is not in the cart', 404));
   }
 
   await doc.save({ validateBeforeSave: false });
