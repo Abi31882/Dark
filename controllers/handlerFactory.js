@@ -90,9 +90,7 @@ exports.getAll = (Model) =>
         }
       });
 
-      res.status(200).json({
-        doc,
-      });
+      res.status(200).json(doc);
     } else {
       // to allow for nested GET reviews on product (hack)
       let filter = {};
