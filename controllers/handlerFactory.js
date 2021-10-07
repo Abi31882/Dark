@@ -77,20 +77,11 @@ exports.getOne = (Model, popOptions) =>
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     if (req.query.query) {
-      // let filter = {};
-      // if (req.query) filter = { name: req.query.query };
-      const docu = await Model.find();
-
-      // eslint-disable-next-line array-callback-return
-      const doc = docu.map((el) => {
-        if (el.name.includes(req.query.query)) {
-          // const e = null;
-          // console.log(el);
-          return el;
-        }
+      const docu = await Model.find({
+        $or: [{ name: { $regex: req.query.query } }],
       });
 
-      res.status(200).json(doc);
+      res.status(200).json(docu);
     } else {
       // to allow for nested GET reviews on product (hack)
       let filter = {};
