@@ -95,3 +95,40 @@ exports.getProduct = factory.getOne(Product, { path: 'reviews' });
 exports.createProduct = factory.createOneProduct(Product);
 exports.updateProduct = factory.updateOne(Product);
 exports.deleteProduct = factory.deleteOne(Product);
+
+// exports.getBySearch = catchAsync(async (req, res, next) => {
+//   // let filter = {};
+//   // if (req.query) filter = { name: req.query.query };
+//   const docu = await Product.find();
+
+//   const doc = docu.map((el) => {
+//     if (el.name.includes(req.query.query)) {
+//       // const e = null;
+//       // console.log(el);
+//       return el;
+//     }
+//   });
+
+//   res.status(200).json({
+//     doc,
+//   });
+// });
+
+// catchAsync(async (req, res, next) => {
+//   // to allow for nested GET reviews on product (hack)
+//   let filter = {};
+//   if (req.params.categoryId)
+//     filter = { productCategory: req.params.categoryId };
+//   const features = new APIFeatures(Model.find(filter), req.query)
+//     .filter()
+//     .sort()
+//     .limitFields()
+//     .paginate();
+//   const doc = await features.query;
+
+//   // SEND RESPONSE
+//   res.status(200).json({
+//     status: 'success',
+//     results: doc.length,
+//     doc,
+//   });

@@ -1,5 +1,4 @@
 const Cart = require('../models/cartModel');
-// const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -39,6 +38,9 @@ exports.addToCart = catchAsync(async (req, res, next) => {
       )
     );
   }
+  // doc.product.push(req.params.productId);
+
+  // await doc.save({ validateBeforeSave: false });
 
   if (!doc.product.includes(products)) {
     doc.product.push(products);
@@ -92,14 +94,13 @@ exports.deleteFromCart = catchAsync(async (req, res, next) => {
 
   if (products) {
     doc.product.splice(index, 1);
+  } else {
+    return next(new AppError('the product is not in the cart', 404));
   }
 
   await doc.save({ validateBeforeSave: false });
 
-  res.status(200).json({
-    status: 'success',
-    doc,
-  });
+  res.status(200).json(doc);
 });
 
 exports.getAllCarts = factory.getAll(Cart);
@@ -114,9 +115,5 @@ exports.getCart = catchAsync(async (req, res, next) => {
     return next(new AppError('No Cart found with that ID', 404));
   }
 
-  res.status(200).json({
-    status: 'success',
-    results: doc.product.length,
-    doc,
-  });
+  res.status(200).json(doc);
 });

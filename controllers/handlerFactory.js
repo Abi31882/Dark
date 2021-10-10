@@ -10,10 +10,7 @@ exports.deleteOne = (Model) =>
     if (!doc) {
       return next(new AppError('No document found with that ID', 404));
     }
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
+    res.status(204).json(null);
   });
 
 exports.updateOne = (Model) =>
@@ -28,6 +25,7 @@ exports.updateOne = (Model) =>
     }
 
     res.status(200).json({
+      status: 'success',
       doc,
     });
   });
@@ -36,9 +34,7 @@ exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.create(req.body);
 
-    res.status(201).json({
-      doc,
-    });
+    res.status(201).json(doc);
   });
 
 exports.createOneProduct = (Model) =>
@@ -50,19 +46,14 @@ exports.createOneProduct = (Model) =>
         const doc = await Model.create(req.body);
 
         res.status(201).json({
+          status: 'success',
           doc,
         });
       } catch (err) {
-        res.status(404).json({
-          status: 'there is no category',
-          err,
-        });
+        res.status(404).json(err);
       }
     } else {
-      res.status(404).json({
-        status: 'fail',
-        message: 'there is no category matched',
-      });
+      res.status(404).json('there is no category matched');
     }
     next();
   });
@@ -78,17 +69,24 @@ exports.getOne = (Model, popOptions) =>
     }
 
     res.status(200).json({
+      status: 'success',
       doc,
     });
   });
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
-    // to allow for nested GET reviews on product (hack)
-    let filter = {};
-    let query = {};
-    if (req.params.categoryId) {
-      filter = { productCategory: req.params.categoryId };
+    if (req.query.query) {
+      const docu = await Model.find({
+        $or: [{ name: { $regex: req.query.query } }],
+      });
+
+      res.status(200).json(docu);
+    } else {
+      // to allow for nested GET reviews on product (hack)
+      let filter = {};
+      if (req.params.categoryId)
+        filter = { productCategory: req.params.categoryId };
       const features = new APIFeatures(Model.find(filter), req.query)
         .filter()
         .sort()
@@ -97,30 +95,6 @@ exports.getAll = (Model) =>
       const doc = await features.query;
 
       // SEND RESPONSE
-      res.status(200).json({
-        doc,
-      });
-    } else if (req.headers.query) {
-      query = { name: [req.headers.query.value] };
-      const features = new APIFeatures(Model.find(query), req.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const doc = await features.query;
-
-      // SEND RESPONSE
-      res.status(200).json({
-        doc,
-      });
-    } else {
-      const features = Model.find();
-
-      const doc = await features;
-
-      // SEND RESPONSE
-      res.status(200).json({
-        doc,
-      });
+      res.status(200).json(doc);
     }
   });

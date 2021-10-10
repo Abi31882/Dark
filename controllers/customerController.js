@@ -82,10 +82,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
-  res.status(200).json({
-    status: 'success',
-    doc,
-  });
+  res.status(200).json(doc);
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
